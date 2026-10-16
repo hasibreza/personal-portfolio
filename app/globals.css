@@ -1,0 +1,108 @@
+@import 'tailwindcss';
+
+/* Dark mode is driven by data-theme on <html> (set before paint by the inline script in app/layout.tsx). */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ------------------------------------------------------------------
+   Design tokens — Palette B "Graphite & Signal Blue" (Project Brief §7, §9)
+   ------------------------------------------------------------------ */
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --text: #16181b;
+  --text2: #5b6168;
+  --accent: #1f5eff;
+  --on-accent: #ffffff;
+  --border: #e4e6e9;
+  --tint: rgb(31 94 255 / 0.08);
+  --warn: #8a5a00;
+  --warn-bg: #fff6e0;
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --bg: #111315;
+  --surface: #1a1d21;
+  --text: #eceef0;
+  --text2: #a3a9b1;
+  --accent: #5b8cff;
+  --on-accent: #111315;
+  --border: #2a2e34;
+  --tint: rgb(91 140 255 / 0.13);
+  --warn: #f2c062;
+  --warn-bg: #2a2414;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--text);
+  --color-ink-2: var(--text2);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-line: var(--border);
+  --color-tint: var(--tint);
+  --color-warn: var(--warn);
+  --color-warn-bg: var(--warn-bg);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --radius-tag: 6px;
+  --radius-control: 10px;
+  --radius-button: 12px;
+  --radius-card: 16px;
+  --radius-panel: 20px;
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--text);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    line-height: 1.6;
+  }
+
+  a {
+    color: var(--accent);
+  }
+
+  a:hover {
+    color: var(--text);
+  }
+
+  /* Accessible focus ring for every interactive element */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1200px;
+  padding-inline: 24px;
+}
