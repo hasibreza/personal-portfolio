@@ -10,7 +10,7 @@ export function ExpertiseCard({ item }: { item: Expertise }) {
   const Icon = expertiseIcons[item.icon]
   if (item.featured) {
     return (
-      <article className="rounded-card border-accent bg-tint flex flex-[2_1_560px] flex-col gap-3.5 border-2 p-8">
+      <article className="reveal rounded-card border-accent bg-tint flex flex-[2_1_560px] flex-col gap-3.5 border-2 p-8">
         <Icon size={36} className="text-accent" />
         <h3 className="font-display m-0 text-[26px] font-semibold">{item.title}</h3>
         <p className="text-ink-2 m-0 text-[17px]">{item.body}</p>
@@ -25,7 +25,7 @@ export function ExpertiseCard({ item }: { item: Expertise }) {
     )
   }
   return (
-    <article className="rounded-card border-line bg-bg flex flex-[1_1_300px] flex-col gap-3 border p-7">
+    <article className="reveal rounded-card border-line bg-bg flex flex-[1_1_300px] flex-col gap-3 border p-7">
       <Icon size={30} className="text-accent" />
       <h3 className="font-display m-0 text-[21px] font-semibold">{item.title}</h3>
       <p className="text-ink-2 m-0">{item.body}</p>
@@ -44,16 +44,24 @@ function CoverPlaceholder({ ratio = 'aspect-video' }: { ratio?: string }) {
   )
 }
 
-export function WorkCard({ item }: { item: WorkSample }) {
+export function WorkCard({
+  item,
+  headingLevel = 'h3',
+}: {
+  item: WorkSample
+  /** h2 when the card sits directly under the page h1 (e.g. /work), h3 inside a titled section. */
+  headingLevel?: 'h2' | 'h3'
+}) {
+  const Heading = headingLevel
   return (
     <Link
       href={`/work/${item.slug}`}
-      className="rounded-card border-line bg-surface text-ink hover:border-ink-2 hover:text-ink flex flex-col overflow-hidden border no-underline"
+      className="reveal rounded-card border-line bg-surface text-ink hover:border-ink-2 hover:text-ink flex flex-col overflow-hidden border no-underline"
     >
       <CoverPlaceholder />
       <div className="flex flex-col gap-2.5 p-6">
         <span className="text-accent font-mono text-[12.5px] uppercase">{item.tag}</span>
-        <h3 className="font-display m-0 text-[21px] font-semibold">{item.title}</h3>
+        <Heading className="font-display m-0 text-[21px] font-semibold">{item.title}</Heading>
         <p className="text-ink-2 m-0">{item.summary}</p>
       </div>
     </Link>
@@ -64,7 +72,7 @@ export function PostCard({ item, onSurface = false }: { item: Post; onSurface?: 
   return (
     <Link
       href={`/insights/${item.slug}`}
-      className={`rounded-card border-line text-ink hover:border-ink-2 hover:text-ink flex flex-col gap-3 border p-7 no-underline ${
+      className={`reveal rounded-card border-line text-ink hover:border-ink-2 hover:text-ink flex flex-col gap-3 border p-7 no-underline ${
         onSurface ? 'bg-bg' : 'bg-surface'
       }`}
     >
@@ -120,7 +128,7 @@ function VerifyLink({ cert, asButton = false }: { cert: Certification; asButton?
 export function CertBadgeCard({ cert }: { cert: Certification }) {
   if (cert.featured) {
     return (
-      <article className="rounded-card border-accent bg-tint col-span-full flex flex-wrap items-center gap-7 border-2 p-8">
+      <article className="reveal rounded-card border-accent bg-tint col-span-full flex flex-wrap items-center gap-7 border-2 p-8">
         <BadgeSlot large />
         <div className="flex flex-[1_1_360px] flex-col gap-1.5">
           {/* Body text colour: accent on the tint panel is below 4.5:1 (WCAG AA). */}
@@ -138,7 +146,7 @@ export function CertBadgeCard({ cert }: { cert: Certification }) {
     )
   }
   return (
-    <article className="rounded-card border-line bg-surface flex flex-col gap-2.5 border p-6">
+    <article className="reveal rounded-card border-line bg-surface flex flex-col gap-2.5 border p-6">
       <BadgeSlot />
       <span className="text-accent font-mono text-[12.5px] uppercase">
         {cert.code} · {cert.year}

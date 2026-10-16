@@ -7,14 +7,14 @@ Supabase (Phase 4).
 
 ## Status
 
-| Phase | Scope                                                             | State           |
-| ----- | ----------------------------------------------------------------- | --------------- |
-| 0     | Content & Project Brief                                           | Approved        |
-| 1     | Design prototype (Prototype A)                                    | Approved        |
-| 2     | Project scaffold: tokens, components, all routes, SEO foundation  | **This commit** |
-| 3     | Build polish + Vercel deploy                                      | Next            |
-| 4     | Supabase: admin auth (MFA), CV, work samples, blog, contact inbox | Later           |
-| 5     | Custom domain, Search Console, analytics, security review         | Later           |
+| Phase | Scope                                                             | State         |
+| ----- | ----------------------------------------------------------------- | ------------- |
+| 0     | Content & Project Brief                                           | Approved      |
+| 1     | Design prototype (Prototype A)                                    | Approved      |
+| 2     | Project scaffold: tokens, components, all routes, SEO foundation  | Done (live)   |
+| 3     | Icons, security headers, CI, analytics, polish, live verification | **In review** |
+| 4     | Supabase: admin auth (MFA), CV, work samples, blog, contact inbox | Later         |
+| 5     | Custom domain, Search Console, analytics, security review         | Later         |
 
 ## Getting started
 
@@ -93,6 +93,57 @@ Per-page title, description and canonical (`lib/seo.ts`), Open Graph/Twitter car
 JSON-LD (Person, WebSite, ProfilePage, BreadcrumbList, BlogPosting, CreativeWork), `sitemap.xml`,
 `robots.txt` (blocks `/admin`). Lighthouse on Home (desktop, local): 100 / 100 / 100 / 100.
 
-## Deploying (Phase 3)
+## Deploying
 
-Import the GitHub repo in Vercel, framework preset **Next.js**, set `NEXT_PUBLIC_SITE_URL`.
+The repo is connected to the Vercel project **personal-portfolio** (team _hasib_).
+
+- **Push to `main`** → production deploy (https://personal-portfolio-two-iota-94.vercel.app).
+- **Push any other branch / open a PR** → private preview deploy (Vercel sign-in required).
+- Environment variables live in Vercel → Project → Settings → Environment Variables
+  (`NEXT_PUBLIC_SITE_URL` is set for Production).
+
+Workflow: branch → PR → CI green → review the preview → merge to `main`.
+
+## Quality gates (CI)
+
+`.github/workflows/ci.yml` runs on every PR and on `main`: `format:check` → `lint` → `typecheck`
+→ `build` (Node 24, pnpm). Dependabot (`.github/dependabot.yml`) opens grouped weekly update PRs for
+npm packages and GitHub Actions. Recommended: enable branch protection on `main` (require a PR and
+the **CI** check).
+
+## Security headers
+
+Set for every route in `next.config.ts`:
+
+| Header                     | Value (summary)                                                                                                                                                       |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Content-Security-Policy    | `default-src 'self'`; scripts/styles self + inline; `object-src 'none'`; `frame-ancestors 'none'`; `form-action 'self'`; `base-uri 'self'`; upgrade insecure requests |
+| Strict-Transport-Security  | 2 years, includeSubDomains, preload                                                                                                                                   |
+| X-Frame-Options            | DENY                                                                                                                                                                  |
+| X-Content-Type-Options     | nosniff                                                                                                                                                               |
+| Referrer-Policy            | strict-origin-when-cross-origin                                                                                                                                       |
+| Permissions-Policy         | camera, microphone, geolocation, payment, USB, topics all off                                                                                                         |
+| Cross-Origin-Opener-Policy | same-origin                                                                                                                                                           |
+| X-Robots-Tag (`/admin`)    | noindex, nofollow, noarchive                                                                                                                                          |
+
+**Why `'unsafe-inline'` for scripts:** Next.js can only attach per-request nonces to its inline
+scripts when every page is rendered dynamically, which disables static prerendering and CDN
+caching. The site loads no third-party scripts and accepts no user content on public pages, so the
+static-site CSP from the Next.js guide is used; everything except inline scripts is locked to this
+origin. Preview deployments additionally allow `vercel.live` for the Vercel Toolbar.
+
+## Analytics
+
+Vercel Web Analytics and Speed Insights (`@vercel/analytics`, `@vercel/speed-insights`) are
+cookie-free and served first-party from `/_vercel/*`. Enable both in Vercel → Project → **Analytics**
+and **Speed Insights**; until enabled, their scripts return 404 (harmless).
+
+## Updating content
+
+| What                                | Where                                                          |
+| ----------------------------------- | -------------------------------------------------------------- |
+| LinkedIn URL                        | Vercel env var `NEXT_PUBLIC_LINKEDIN_URL`                      |
+| CV PDF link (until Phase 4)         | Vercel env var `CV_URL`                                        |
+| Certification verification links    | `content/certifications.ts` → `verifyUrl`                      |
+| Headshot                            | replace `public/images/headshot.png` (portrait, ≥ 800 px wide) |
+| Profile copy, expertise, experience | `content/*.ts`                                                 |

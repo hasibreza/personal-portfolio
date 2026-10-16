@@ -51,7 +51,7 @@ export function FilterableWork({ items }: { items: WorkSample[] }) {
       </p>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-6">
         {shown.map((w) => (
-          <WorkCard key={w.slug} item={w} />
+          <WorkCard key={w.slug} item={w} headingLevel="h2" />
         ))}
       </div>
     </>

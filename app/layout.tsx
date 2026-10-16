@@ -1,4 +1,7 @@
 import type { Metadata, Viewport } from 'next'
+import { Suspense } from 'react'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { inter, jetbrainsMono, spaceGrotesk } from './fonts'
 import { site } from '@/lib/site'
 import './globals.css'
@@ -43,7 +46,14 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="bg-bg text-ink min-h-dvh">{children}</body>
+      <body className="bg-bg text-ink min-h-dvh">
+        {children}
+        {/* Cookie-free, first-party (served from /_vercel on this domain); no consent banner needed. */}
+        <Suspense fallback={null}>
+          <Analytics />
+          <SpeedInsights />
+        </Suspense>
+      </body>
     </html>
   )
 }
