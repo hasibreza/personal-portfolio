@@ -72,7 +72,7 @@ export default async function ArticlePage({ params }: PageProps<'/insights/[slug
         </div>
       </div>
 
-      <article className="mx-auto flex w-full max-w-[680px] flex-col gap-5 px-6 pt-14 pb-8 text-[18.5px] leading-[1.75]">
+      <article className="prose-links mx-auto flex w-full max-w-[680px] flex-col gap-5 px-6 pt-14 pb-8 text-[18.5px] leading-[1.75]">
         <p className="m-0">
           [Body text. The editor&apos;s paragraph style: 18.5 px Inter with a 1.75 line height for
           long reading.]

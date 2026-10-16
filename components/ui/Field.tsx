@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from 'react'
 
 const control =
-  'w-full rounded-control border border-line bg-bg text-ink px-3.5 font-[inherit] text-base placeholder:text-ink-2'
+  'w-full rounded-control border border-field bg-bg text-ink px-3.5 font-[inherit] text-base placeholder:text-ink-2'
 
 type BaseProps = { id: string; label: ReactNode; hint?: ReactNode; className?: string }
 

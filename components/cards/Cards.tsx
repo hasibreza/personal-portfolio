@@ -123,7 +123,8 @@ export function CertBadgeCard({ cert }: { cert: Certification }) {
       <article className="rounded-card border-accent bg-tint col-span-full flex flex-wrap items-center gap-7 border-2 p-8">
         <BadgeSlot large />
         <div className="flex flex-[1_1_360px] flex-col gap-1.5">
-          <span className="text-accent font-mono text-[13px] uppercase">
+          {/* Body text colour: accent on the tint panel is below 4.5:1 (WCAG AA). */}
+          <span className="text-ink font-mono text-[13px] font-medium uppercase">
             {cert.code} · {cert.year}
           </span>
           <h2 className="font-display m-0 text-[26px] font-semibold">{cert.name}</h2>

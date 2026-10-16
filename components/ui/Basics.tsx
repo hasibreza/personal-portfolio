@@ -85,7 +85,7 @@ export function TrainingPill({
 
 type PillTone = 'draft' | 'published' | 'scheduled' | 'live' | 'muted'
 const tones: Record<PillTone, string> = {
-  draft: 'bg-tint text-accent',
+  draft: 'bg-tint text-ink', // accent text on tint is below 4.5:1 (WCAG AA)
   published: 'bg-ink text-bg',
   scheduled: 'border border-line text-ink',
   live: 'bg-accent text-on-accent',

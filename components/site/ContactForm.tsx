@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/Button'
+import { Button, buttonClasses } from '@/components/ui/Button'
 import { SelectField, TextAreaField, TextField } from '@/components/ui/Field'
-import { CheckCircleIcon } from '@/components/ui/icons'
+import { MailIcon } from '@/components/ui/icons'
+import { site } from '@/lib/site'
 
 const subjects = [
   'Speaking invitation',
@@ -23,14 +24,20 @@ export function ContactForm() {
   if (sent) {
     return (
       <div role="status" className="flex min-h-[420px] flex-col items-start justify-center gap-4">
-        <CheckCircleIcon size={48} className="text-accent" />
-        <h2 className="font-display m-0 text-3xl font-semibold">
-          Thanks, your message is on its way.
-        </h2>
-        <p className="text-ink-2 m-0">I&apos;ll get back to you by email.</p>
-        <Button variant="secondary" size="md" onClick={() => setSent(false)}>
-          Send another message
-        </Button>
+        <MailIcon size={48} className="text-accent" />
+        <h2 className="font-display m-0 text-3xl font-semibold">Your message was not sent yet.</h2>
+        <p className="text-ink-2 m-0">
+          The contact form is being connected. Until then, please email me directly and I&apos;ll
+          reply personally.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <a href={`mailto:${site.email}`} className={buttonClasses('primary', 'md')}>
+            Email {site.email}
+          </a>
+          <Button variant="secondary" size="md" onClick={() => setSent(false)}>
+            Back to the form
+          </Button>
+        </div>
       </div>
     )
   }

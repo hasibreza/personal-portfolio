@@ -42,6 +42,8 @@
   --color-accent: var(--accent);
   --color-on-accent: var(--on-accent);
   --color-line: var(--border);
+  /* Form-control outline derived from --text2 so input edges meet WCAG 1.4.11 (≥ 3:1) in both themes. */
+  --color-field: color-mix(in srgb, var(--text2) 70%, var(--bg));
   --color-tint: var(--tint);
   --color-warn: var(--warn);
   --color-warn-bg: var(--warn-bg);
@@ -97,6 +99,15 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+}
+
+/* Links inside running text are underlined so they never rely on colour alone (WCAG 1.4.1). */
+@utility prose-links {
+  & a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
   }
 }
 
