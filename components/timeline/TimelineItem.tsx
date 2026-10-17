@@ -2,7 +2,7 @@ import type { Role } from '@/content/experience'
 
 export function TimelineItem({ role, last = false }: { role: Role; last?: boolean }) {
   return (
-    <li className="flex gap-4 sm:gap-6">
+    <li className="reveal flex gap-4 sm:gap-6">
       <div className="flex w-5 shrink-0 flex-col items-center" aria-hidden="true">
         {role.current ? (
           <span className="bg-accent border-tint mt-[26px] size-[18px] rounded-full border-4" />

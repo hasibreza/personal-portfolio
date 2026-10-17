@@ -102,6 +102,28 @@
   }
 }
 
+/* Subtle rise as sections scroll into view. CSS-only (no JavaScript): browsers
+   without scroll-driven animations simply show the content; reduced-motion users get none. */
+@utility reveal {
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+@keyframes reveal-in {
+  /* Transform only: content stays fully opaque, so contrast is never reduced. */
+  from {
+    transform: translateY(28px);
+  }
+  to {
+    transform: none;
+  }
+}
+
 /* Links inside running text are underlined so they never rely on colour alone (WCAG 1.4.1). */
 @utility prose-links {
   & a {

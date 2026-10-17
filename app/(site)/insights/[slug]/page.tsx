@@ -83,7 +83,7 @@ export default async function ArticlePage({ params }: PageProps<'/insights/[slug
         <p className="m-0">
           [Body text continues. Links appear like <a href="#top">this inline link</a>.]
         </p>
-        <ul className="m-0 flex flex-col gap-2 pl-6">
+        <ul className="m-0 flex list-disc flex-col gap-2 pl-6">
           <li>[List item]</li>
           <li>[List item]</li>
           <li>[List item]</li>
