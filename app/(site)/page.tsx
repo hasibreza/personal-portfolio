@@ -70,7 +70,6 @@ export default function HomePage() {
             <Image
               src={headshot}
               alt="Portrait of Md. Hasib Reza"
-              placeholder="blur"
               loading="eager"
               fetchPriority="high"
               sizes="(max-width: 768px) 80vw, 360px"
