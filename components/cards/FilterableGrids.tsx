@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { postTags, workAreas, type Post, type WorkSample } from '@/content/samples'
+import { useMemo, useState } from 'react'
+import { workAreas } from '@/content/taxonomy'
+import type { PostItem, WorkItem } from '@/lib/content'
 import { PostCard, WorkCard } from './Cards'
 
-function FilterBar<T extends string>({
+function FilterBar({
   label,
   options,
   active,
@@ -12,12 +13,12 @@ function FilterBar<T extends string>({
   format = (v) => v,
 }: {
   label: string
-  options: readonly T[]
-  active: T | 'All'
-  onPick: (v: T | 'All') => void
+  options: readonly string[]
+  active: string
+  onPick: (v: string) => void
   format?: (v: string) => string
 }) {
-  const all: (T | 'All')[] = ['All', ...options]
+  const all = ['All', ...options]
   return (
     <div role="group" aria-label={label} className="mb-9 flex flex-wrap gap-2.5">
       {all.map((o) => {
@@ -40,12 +41,15 @@ function FilterBar<T extends string>({
   )
 }
 
-export function FilterableWork({ items }: { items: WorkSample[] }) {
-  const [active, setActive] = useState<(typeof workAreas)[number] | 'All'>('All')
+export function FilterableWork({ items }: { items: WorkItem[] }) {
+  const [active, setActive] = useState('All')
+  const areas = workAreas.filter((a) => items.some((i) => i.area === a))
   const shown = active === 'All' ? items : items.filter((i) => i.area === active)
   return (
     <>
-      <FilterBar label="Filter by area" options={workAreas} active={active} onPick={setActive} />
+      {areas.length > 1 ? (
+        <FilterBar label="Filter by area" options={areas} active={active} onPick={setActive} />
+      ) : null}
       <p className="sr-only" aria-live="polite">
         {shown.length} case studies shown
       </p>
@@ -58,24 +62,27 @@ export function FilterableWork({ items }: { items: WorkSample[] }) {
   )
 }
 
-export function FilterablePosts({ items }: { items: Post[] }) {
-  const [active, setActive] = useState<(typeof postTags)[number] | 'All'>('All')
-  const shown = active === 'All' ? items : items.filter((i) => i.tag === active)
+export function FilterablePosts({ items }: { items: PostItem[] }) {
+  const [active, setActive] = useState('All')
+  const tagList = useMemo(() => [...new Set(items.flatMap((i) => i.tags))].sort(), [items])
+  const shown = active === 'All' ? items : items.filter((i) => i.tags.includes(active))
   return (
     <>
-      <FilterBar
-        label="Filter by tag"
-        options={postTags}
-        active={active}
-        onPick={setActive}
-        format={(v) => `#${v}`}
-      />
+      {tagList.length > 1 ? (
+        <FilterBar
+          label="Filter by tag"
+          options={tagList}
+          active={active}
+          onPick={setActive}
+          format={(v) => `#${v}`}
+        />
+      ) : null}
       <p className="sr-only" aria-live="polite">
         {shown.length} articles shown
       </p>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-6">
         {shown.map((p) => (
-          <PostCard key={p.slug} item={p} />
+          <PostCard key={p.slug} item={p} headingLevel="h2" />
         ))}
       </div>
     </>

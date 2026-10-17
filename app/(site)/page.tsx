@@ -8,7 +8,7 @@ import { ButtonLink, buttonClasses } from '@/components/ui/Button'
 import { DownloadIcon } from '@/components/ui/icons'
 import { expertise } from '@/content/expertise'
 import { profile } from '@/content/profile'
-import { posts, workSamples } from '@/content/samples'
+import { getFeaturedProjects, getPosts } from '@/lib/content'
 import { JsonLd, pageMetadata, personJsonLd, profilePageJsonLd, websiteJsonLd } from '@/lib/seo'
 
 export const metadata = pageMetadata({
@@ -21,7 +21,8 @@ export const metadata = pageMetadata({
 
 const textLink = 'inline-flex min-h-11 items-center font-semibold no-underline'
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [work, latest] = await Promise.all([getFeaturedProjects(3), getPosts()])
   return (
     <>
       <JsonLd data={personJsonLd()} />
@@ -114,45 +115,49 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Selected work */}
-      <section aria-labelledby="work-h">
-        <div className="container-page flex flex-col gap-10 py-[88px]">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <SectionLabel>Selected work</SectionLabel>
-              <SectionHeading id="work-h">Case studies</SectionHeading>
+      {/* Selected work — shown once at least one case study is published */}
+      {work.length > 0 ? (
+        <section aria-labelledby="work-h">
+          <div className="container-page flex flex-col gap-10 py-[88px]">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <SectionLabel>Selected work</SectionLabel>
+                <SectionHeading id="work-h">Case studies</SectionHeading>
+              </div>
+              <Link href="/work" className={textLink}>
+                View all work →
+              </Link>
             </div>
-            <Link href="/work" className={textLink}>
-              View all work →
-            </Link>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-6">
+              {work.map((w) => (
+                <WorkCard key={w.slug} item={w} />
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-6">
-            {workSamples.slice(0, 3).map((w) => (
-              <WorkCard key={w.slug} item={w} />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
-      {/* Insights */}
-      <section aria-labelledby="ins-h" className="border-line bg-surface border-y">
-        <div className="container-page flex flex-col gap-10 py-[88px]">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <SectionLabel>Insights</SectionLabel>
-              <SectionHeading id="ins-h">Latest writing</SectionHeading>
+      {/* Insights — shown once at least one article is published */}
+      {latest.length > 0 ? (
+        <section aria-labelledby="ins-h" className="border-line bg-surface border-y">
+          <div className="container-page flex flex-col gap-10 py-[88px]">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <SectionLabel>Insights</SectionLabel>
+                <SectionHeading id="ins-h">Latest writing</SectionHeading>
+              </div>
+              <Link href="/insights" className={textLink}>
+                All articles →
+              </Link>
             </div>
-            <Link href="/insights" className={textLink}>
-              All articles →
-            </Link>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-6">
+              {latest.slice(0, 3).map((p) => (
+                <PostCard key={p.slug} item={p} onSurface />
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-6">
-            {posts.slice(0, 3).map((p) => (
-              <PostCard key={p.slug} item={p} onSurface />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       {/* Contact CTA */}
       <section aria-labelledby="cta-h">
