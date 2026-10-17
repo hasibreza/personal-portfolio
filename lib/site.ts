@@ -30,6 +30,7 @@ export const adminNav = [
   { href: '/admin/cv', label: 'CV' },
   { href: '/admin/work', label: 'Work samples' },
   { href: '/admin/blog', label: 'Blog' },
+  { href: '/admin/certifications', label: 'Certifications' },
   { href: '/admin/inbox', label: 'Inbox' },
 ] as const
 

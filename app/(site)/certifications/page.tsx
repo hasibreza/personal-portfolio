@@ -1,7 +1,8 @@
 import { CertBadgeCard } from '@/components/cards/Cards'
 import { Breadcrumb } from '@/components/site/Breadcrumb'
 import { PageIntro, TrainingPill } from '@/components/ui/Basics'
-import { certifications, training } from '@/content/certifications'
+import { training } from '@/content/certifications'
+import { getCertifications } from '@/lib/content'
 import { pageMetadata } from '@/lib/seo'
 
 export const metadata = pageMetadata({
@@ -11,7 +12,8 @@ export const metadata = pageMetadata({
   path: '/certifications',
 })
 
-export default function CertificationsPage() {
+export default async function CertificationsPage() {
+  const certifications = await getCertifications()
   return (
     <div className="container-page pt-[72px] pb-24">
       <Breadcrumb items={[{ label: 'Certifications' }]} />

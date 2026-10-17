@@ -1,7 +1,8 @@
 import { FilterableWork } from '@/components/cards/FilterableGrids'
 import { Breadcrumb } from '@/components/site/Breadcrumb'
+import { EmptyState } from '@/components/site/RichText'
 import { PageIntro } from '@/components/ui/Basics'
-import { workSamples } from '@/content/samples'
+import { getProjects } from '@/lib/content'
 import { pageMetadata } from '@/lib/seo'
 
 export const metadata = pageMetadata({
@@ -11,7 +12,8 @@ export const metadata = pageMetadata({
   path: '/work',
 })
 
-export default function WorkPage() {
+export default async function WorkPage() {
+  const items = await getProjects()
   return (
     <div className="container-page pt-[72px] pb-24">
       <Breadcrumb items={[{ label: 'Work' }]} />
@@ -21,7 +23,11 @@ export default function WorkPage() {
         lead="Each case study covers the problem, my approach and the outcome."
       />
       <div className="mt-9">
-        <FilterableWork items={workSamples} />
+        {items.length > 0 ? (
+          <FilterableWork items={items} />
+        ) : (
+          <EmptyState>Case studies are being written up and will appear here soon.</EmptyState>
+        )}
       </div>
     </div>
   )

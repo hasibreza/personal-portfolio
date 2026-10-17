@@ -4,21 +4,29 @@ const isDev = process.env.NODE_ENV === 'development'
 /** Vercel preview deployments load the Vercel Toolbar (comments/feedback) from vercel.live. */
 const isPreview = process.env.VERCEL_ENV === 'preview'
 const toolbar = isPreview ? ' https://vercel.live' : ''
+/** Supabase project origin (Auth + Storage), e.g. https://xyz.supabase.co */
+const supabase = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).origin
+  : ''
+const sb = supabase ? ` ${supabase}` : ''
+/** Cloudflare Turnstile (contact form spam check). */
+const turnstile = ' https://challenges.cloudflare.com'
 
 /**
  * Content-Security-Policy — static-site variant (Next.js "Without Nonces" guide).
  * Nonces would force every page to render dynamically and disable static prerendering,
  * so inline scripts (theme script + React Server Components payload) are allowed while
- * everything else is locked to this origin. No third-party scripts are used.
+ * everything else is locked to this origin. The only third-party origins are Supabase
+ * (admin sign-in, uploads, admin image previews) and Cloudflare Turnstile (contact form).
  */
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}${toolbar}`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}${toolbar}${turnstile}`,
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' blob: data:${toolbar} ${isPreview ? 'https://vercel.com' : ''}`.trim(),
+  `img-src 'self' blob: data:${sb}${toolbar} ${isPreview ? 'https://vercel.com' : ''}`.trim(),
   "font-src 'self'" + (isPreview ? ' https://vercel.live https://assets.vercel.com' : ''),
-  `connect-src 'self'${isPreview ? ' https://vercel.live wss://ws-us3.pusher.com' : ''}`,
-  `frame-src ${isPreview ? 'https://vercel.live' : "'none'"}`,
+  `connect-src 'self'${sb}${isPreview ? ' https://vercel.live wss://ws-us3.pusher.com' : ''}`,
+  `frame-src${turnstile}${isPreview ? ' https://vercel.live' : ''}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -45,6 +53,18 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  images: {
+    // Public `media` bucket only (covers, gallery, badges).
+    remotePatterns: supabase
+      ? [
+          {
+            protocol: 'https',
+            hostname: new URL(supabase).hostname,
+            pathname: '/storage/v1/object/public/media/**',
+          },
+        ]
+      : [],
+  },
   turbopack: {
     rules: {
       '*.css': {

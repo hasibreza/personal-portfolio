@@ -1,0 +1,18 @@
+name: Keep Supabase awake
+
+# Free Supabase projects pause after ~7 days without activity. This pings the live site's
+# /api/keepalive route (one tiny public query) twice a week. No secrets are needed.
+on:
+  schedule:
+    - cron: '17 3 * * 1,4'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping
+        run: curl --fail --silent --show-error --max-time 30 https://personal-portfolio-two-iota-94.vercel.app/api/keepalive

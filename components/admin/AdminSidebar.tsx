@@ -39,7 +39,13 @@ export function AdminNavFallback() {
   return <AdminNavList pathname={null} />
 }
 
-export function AdminSidebarFrame({ children }: { children: React.ReactNode }) {
+export function AdminSidebarFrame({
+  children,
+  footer,
+}: {
+  children: React.ReactNode
+  footer?: React.ReactNode
+}) {
   return (
     <aside className="border-line bg-surface flex w-full flex-col gap-6 border-b px-4 py-6 md:w-60 md:shrink-0 md:border-r md:border-b-0">
       <div className="flex items-center gap-2.5 px-2">
@@ -48,9 +54,12 @@ export function AdminSidebarFrame({ children }: { children: React.ReactNode }) {
       </div>
       <nav aria-label="Admin">{children}</nav>
       <div className="border-line mt-auto flex items-center justify-between gap-2 border-t px-1 pt-4">
-        <Link href="/" className="text-ink-2 px-2 py-2 no-underline">
-          View site ↗
-        </Link>
+        <div className="flex flex-col">
+          <Link href="/" className="text-ink-2 inline-flex min-h-11 items-center px-2 no-underline">
+            View site ↗
+          </Link>
+          {footer}
+        </div>
         <ThemeToggle />
       </div>
     </aside>
