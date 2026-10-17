@@ -4,6 +4,8 @@ import { profile } from '@/content/profile'
 import { certifications } from '@/content/certifications'
 import { absoluteUrl, site } from './site'
 
+const defaultOgAlt = 'Md. Hasib Reza — Virtualization & Private Cloud Infrastructure Specialist'
+
 type PageSeo = {
   title: string
   description: string
@@ -26,6 +28,9 @@ export function pageMetadata({
   image,
 }: PageSeo): Metadata {
   const url = absoluteUrl(path)
+  const ogImage = image
+    ? { url: image }
+    : { url: absoluteUrl('/opengraph-image'), width: 1200, height: 630, alt: defaultOgAlt }
   return {
     title: { absolute: title },
     description,
@@ -39,9 +44,10 @@ export function pageMetadata({
       siteName: site.name,
       locale: site.locale,
       ...(publishedTime ? { publishedTime } : {}),
-      ...(image ? { images: [{ url: image }] } : {}),
+      // A page-level openGraph object replaces the root one, so the share image must be set here.
+      images: [ogImage],
     },
-    twitter: { card: 'summary_large_image', title, description },
+    twitter: { card: 'summary_large_image', title, description, images: [ogImage.url] },
   }
 }
 
